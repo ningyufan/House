@@ -1,6 +1,10 @@
 pragma solidity ^0.4.17;
 
 contract HouseStore {
+
+    enum HouseStatus { Sold, Unsold }        //房子状态，（售出，未售）
+    enum HouseCondition { New, Used }        //房子品相（新房，二手房）
+
     struct Product {
         //房子基本信息
         uint id;                 //房子编号
@@ -12,27 +16,24 @@ contract HouseStore {
         string HouseAddress;     //房子地址
         uint floors;             //楼层
         uint price;              //月租
+        uint deposit;            //押金
         string imageLink;        //房子图片链接地址
         string descLink;         //房子描述链接地址
 
         //房子出租信息
-        uint StartTime;          //开始出租时间
-        uint duration;           //租房时长
-
         HouseStatus status;       //房子销售状态：售出、未售
         HouseCondition condition; //品相：新品、二手
 
         mapping (address => mapping (bytes32 => Buyer)) buyers;
     }
-    enum HouseStatus { Sold, Unsold }        //房子状态，（售出，未售）
-    enum HouseCondition { New, Used }        //房子品相（新房，二手房）
 
-
+    //买家信息
     struct Buyer {
-        address bidder;            //买家账户地址
+        address buyeradd;          //买家账户地址
         uint HouseId;              //房子编号
-        uint value;                //支付的押金
-        bool revealed;             //是否揭示过出价
+        uint value;                //支付金额
+        uint StartTime;            //开始租房时间
+        uint month;                //租房时长
     }
 
     //嵌套的mapping来区分不同卖家的房子：键为卖家的账户地址，值为另一个mapping —— 从房子编号到房子信息的映射：
@@ -55,6 +56,7 @@ contract HouseStore {
         string _HouseAddress,     //房子地址
         uint _floors,             //楼层
         uint _price,              //月租
+        uint _deposit,            //押金
         string _imageLink,        //房子图片链接地址
         string _descLink,         //房子描述链接地址
         uint _HouseCondition      //品相：新品、二手
@@ -63,7 +65,7 @@ contract HouseStore {
         HouseIndex += 1;
         //构造Product结构变量
         Product memory product = Product(HouseIndex, _name, _room, _category, _balcony, _bathroom,
-                            _HouseAddress, _floors, _price, _imageLink, _descLink, 0, 0,
+                            _HouseAddress, _floors, _price, _deposit, _imageLink, _descLink,
                             HouseStatus.Unsold, HouseCondition(_HouseCondition));
         //存入房子目录表
         stores[msg.sender][HouseIndex] = product;
@@ -73,8 +75,7 @@ contract HouseStore {
 
     //问题，堆栈太深，只能返回10个变量
     function getProduct( uint _productId) view public returns (uint, string, uint, string, uint, uint, string,
-                                                                uint, uint, string
-                                                                ) {
+                                                                uint, uint, string) {
         //利用商品编号提取商品信息
         Product memory product = stores[HouseIdInStore[_productId]][_productId];
         //按照定义的先后顺序依次返回product结构各成员
@@ -82,18 +83,22 @@ contract HouseStore {
             product.bathroom, product.HouseAddress, product.floors, product.price,product.imageLink);
     }
 
-    function bid(uint _productId, bytes32 _bid) payable public returns (bool) {
+    function buy (
+            uint _productId,   //商品编号
+            uint _month,       //月份
+            bytes32 _buy       //密封支付哈希值
+            ) payable public returns (bool) {
+
         //利用商品编号提取商品数据
         Product storage product = stores[HouseIdInStore[_productId]][_productId];
-        //当前还处于竞价有效期内
-        require (now >= product.auctionStartTime);
-        require (now <= product.auctionEndTime);
-        //支付的保证金高于商品起拍价
-        require (msg.value > product.startPrice);
+
+        //支付的金额大于等于押金 + 租金
+        require (msg.value >= product.deposit + product.price * _month);
+
         //竞价人首次递交该出价
-        require (product.bids[msg.sender][_bid].bidder == 0);
-        //保存出价信息
-        product.bids[msg.sender][_bid] = Bid(msg.sender, _productId, msg.value, false);
+        require (product.buyers[msg.sender][_buy].buyeradd == 0);
+        //保存支付信息
+        product.buyers[msg.sender][_buy] = Buyer(msg.sender, _productId, msg.value, now, _month);
         return true;
     }
 }
