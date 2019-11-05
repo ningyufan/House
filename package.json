@@ -33,5 +33,11 @@
     "web3": "^0.20.0",
     "webpack": "^2.2.1",
     "webpack-dev-server": "^2.3.0"
+  },
+  "dependencies": {
+    "bootstrap": "^4.0.0",
+    "ethereumjs-util": "^5.1.5",
+    "ipfs-api": "^18.2.1",
+    "jquery": "^3.3.1"
   }
 }
