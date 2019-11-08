@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>房子详情</title>
+	<meta charset="utf-8">
+    <script src="./app.js"></script>
+</head>
+<body>
+    <div class="container" id="product-page">
+        <h1 class="text-center">Product Details</h1>
+        <div class="container">
+            <div class="row">
+                <div style="display: none;" class="alert alert-success col-sm-12" id="msg"></div>
+            </div>
+
+            <div class="row" id="product-details">
+                <div class="col-sm-12 row">
+                    <div class="col-lg-4 col-sm-6">
+                        <div id="product-image"></div>
+                        <div id="product-name"></div>
+                        <div id="product-price"></div>
+                        <div id="product-auction-end"></div>
+                        <div id="product-room"></div>
+                        <div id="product-category">g</div>
+                        <div id="product-balcony">g</div>
+                        <div id="product-bathroom">re</div>
+                        <div id="product-HouseAddress">rge</div>
+                        <div id="product-floors">ge</div>
+                        <div id="product-HouseCondition">geg</div>                  
+                    </div>
+
+                    <div class="col-lg-8 col-sm-6">
+                        <h3>Start Price: <span id="product-price"></span></h3>
+                        <div id="product-status"></div>
+                        <div id="escrow-info">
+                            <p></p>
+                            <div id="buyer"></div>
+                            <div id="seller"></div>
+                            <div id="arbiter"></div>
+                            <p></p>
+                            <div id="release-count"></div>
+                            <div id="refund-count"></div>
+                            <div id="buyer-vote">
+                            <h4>Buyer vote</h4>
+                            <a class="btn btn-success release-funds">Release Amount to Seller</a>
+                            <a class="btn btn-primary refund-funds">Refund Amount to Buyer</a>
+                            </div>
+                            <div id="seller-vote">
+                            <h4>Seller vote</h4>
+                            <a class="btn btn-success release-funds">Release Amount to Seller</a>
+                            <a class="btn btn-primary refund-funds">Refund Amount to Buyer</a>
+                            </div>
+                            <div id="arbiter-vote">
+                            <h4>Arbiter vote</h4>
+                            <a class="btn btn-success release-funds">Release Amount to Seller</a>
+                            <a class="btn btn-primary refund-funds">Refund Amount to Buyer</a>
+                            </div>
+                        </div>
+                        
+                        <form id="bidding" class="col-lg-6 col-sm-12">
+                            <h4>Your Bid</h4>
+
+                            <div class="form-group">
+                                <label for="buy-price">支付金额</label>
+                                <input type="text" class="form-control" name="buy-price" id="buy-price" placeholder="请输入支付金额" required="required">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="buy-StartTime">入住时间</label>
+                                <input type="text" class="form-control" name="buy-StartTime" id="buy-StartTime" placeholder="请输入入住时间" required="required">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="buy-month">租房时长</label>
+                                <input type="text" class="form-control" name="buy-month" id="buy-month" placeholder="请输入租房时长" required="required">
+                            </div>
+
+                            <input type="hidden" name="product-id" id="product-id" />
+                            <button type="submit" class="btn btn-primary">确认购买</button>
+                        </form>
+                        
+                        <!-- <form id="revealing" class="col-lg-6 col-sm-12">
+                            <h4>Reveal Bid</h4>
+                            <div class="form-group">
+                                <label for="actual-amount">Amount You Bid</label>
+                                <input type="text" class="form-control" name="actual-amount" id="actual-amount" placeholder="Amount > Start Price" required="required">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="reveal-secret-text">Enter Secret Text</label>
+                                <input type="text" class="form-control" name="reveal-secret-text" id="reveal-secret-text" placeholder="Any random text" required="required">
+                            </div>
+
+                            <input type="hidden" name="product-id" id="product-id" />
+                            <button type="submit" class="btn btn-primary">Reveal Bid</button>
+                        </form>       -->
+
+                        <!-- <form id="finalize-auction" class="col-lg-6 col-sm-12">
+                            <input type="hidden" name="product-id" id="product-id" />
+                            <button type="submit" class="btn btn-danger">Finalize Auction
+                        </form>     -->
+                    
+                    </div>
+                </div>
+
+                <div id="product-desc" class="col-sm-12">
+                 <h2>Product Description</h2>
+                </div>
+                        
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

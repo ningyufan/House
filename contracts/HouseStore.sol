@@ -1,5 +1,7 @@
 pragma solidity ^0.4.17;
 
+import "contracts/Escrow.sol";
+
 contract HouseStore {
 
     enum HouseStatus { Sold, Unsold }        //房子状态，（售出，未售）
@@ -24,7 +26,7 @@ contract HouseStore {
         HouseStatus status;       //房子销售状态：售出、未售
         HouseCondition condition; //品相：新品、二手
 
-        mapping (address => mapping (bytes32 => Buyer)) buyers;
+        mapping (address => mapping (uint => Buyer)) buyers;
     }
 
     //买家信息
@@ -41,6 +43,10 @@ contract HouseStore {
 
     //房子编号到卖家账户地址的映射表
     mapping (uint => address ) HouseIdInStore;
+
+    mapping (uint => address) productEscrow;
+
+    // event NewProduct(uint _productId, string _name, string _category, string _imageLink, string _descLink, uint _auctionStartTime, uint _auctionEndTime, uint _startPrice, uint _productCondition);
 
     //productIndex状态用来记录这个全局性的房子编号计数器
     uint public HouseIndex;
@@ -84,28 +90,28 @@ contract HouseStore {
     }
 
     function buy (
-            uint _productId,   //商品编号
-            uint _month,       //月份
-            bytes32 _buy       //密封支付哈希值
+            uint _productId,      //商品编号
+            uint _month,          //月份
+            uint _StartTime,      //入住时间
+            uint _prices       //支付金额
             ) payable public returns (bool) {
 
         //利用商品编号提取商品数据
         Product storage product = stores[HouseIdInStore[_productId]][_productId];
 
         //支付的金额大于等于押金 + 租金
-        require (msg.value >= product.deposit + product.price * _month);
+        require ( _prices >= product.deposit + product.price * _month);
 
-        //竞价人首次递交该出价
-        require (product.buyers[msg.sender][_buy].buyeradd == 0);
         //保存支付信息
-        product.buyers[msg.sender][_buy] = Buyer(msg.sender, _productId, msg.value, now, _month);
+        product.buyers[msg.sender][_prices] = Buyer(msg.sender, _productId, _prices, _StartTime, _month);
         return true;
     }
+
 }
 
 
-//命令：
-//>truffle compile     //编译
+    //命令：
+    //>truffle compile     //编译
 //>ganache-cli         //节点仿真器
 //>truffle migrate     //执行迁移脚本：
 //truffle console      //进入truffle控制台
