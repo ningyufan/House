@@ -81,19 +81,19 @@ contract HouseStore {
 
     //问题，堆栈太深，只能返回10个变量
     function getProduct( uint _productId) view public returns (uint, string, uint, string, uint, uint, string,
-                                                                uint, uint, string) {
+                                                                string, uint, string) {
         //利用商品编号提取商品信息
         Product memory product = stores[HouseIdInStore[_productId]][_productId];
         //按照定义的先后顺序依次返回product结构各成员
         return (product.id, product.name, product.room, product.category,product.balcony,
-            product.bathroom, product.HouseAddress, product.floors, product.price,product.imageLink);
+            product.bathroom, product.HouseAddress, product.descLink, product.price,product.imageLink);
     }
 
     function buy (
             uint _productId,      //商品编号
             uint _month,          //月份
             uint _StartTime,      //入住时间
-            uint _prices       //支付金额
+            uint _prices          //支付金额
             ) payable public returns (bool) {
 
         //利用商品编号提取商品数据

@@ -58,28 +58,28 @@ window.App = {
       if(!productId) return $('#msg').html('ERROR: no product id specified.').show();
       renderProductDetails(productId);    
 
-      $("#bidding").submit(function(event) {
-        event.preventDefault();
+    //   $("#bidding").submit(function(event) {
+    //     event.preventDefault();
 
-        $("#msg").hide();
-        //采集表单信息  
-        let productId = $("#product-id").val();
-        let buyPrice = $("#buy-price").val();
-        let StartTime = $("#buy-StartTime").val();
-        let secretText = $("#buy-month").val();
+    //     $("#msg").hide();
+    //     //采集表单信息  
+    //     let productId = $("#product-id").val();
+    //     let buyPrice = $("#buy-price").val();
+    //     let StartTime = $("#buy-StartTime").val();
+    //     let secretText = $("#buy-month").val();
      
-        //计算密封出价哈希
-        let sealedBid = '0x' + ethUtil.sha3(web3.toWei(buyPrice, 'ether') + secretText).toString('hex');
+    //     //计算密封出价哈希
+    //     let sealedBid = '0x' + ethUtil.sha3(web3.toWei(buyPrice, 'ether') + secretText).toString('hex');
      
-        //密封出价
-          HouseStore.deployed()
-          .then(inst => inst.bid(parseInt(productId), sealedBid, {value: web3.toWei(sendAmount), from: web3.eth.accounts[1], gas: 440000}))
-          .then(ret => {
-              $("#msg").html("Your bid has been successfully submitted!");
-              $("#msg").show();
-            })
-            .catch(err => console.log(err))
-     });
+    //     //密封出价
+    //       HouseStore.deployed()
+    //       .then(inst => inst.bid(parseInt(productId), sealedBid, {value: web3.toWei(sendAmount), from: web3.eth.accounts[1], gas: 440000}))
+    //       .then(ret => {
+    //           $("#msg").html("Your bid has been successfully submitted!");
+    //           $("#msg").show();
+    //         })
+    //         .catch(err => console.log(err))
+    //  });
     }    
 
     //product.html end
@@ -197,17 +197,15 @@ function renderProductDetails(productId) {
     //从区块链提取商品数据
     inst.getProduct.call(productId).then(function(p) {
       //显示ipfs上的商品描述信息
-      ipfs.cat(p[11]).then( data => {
+      ipfs.cat(p[7]).then( data => {
         let content = data.toString();
         $("#product-desc").append(`<div>${content}</div>`);
       });
       //显示ipfs上的商品图片
       // let imgurl = `https://${appHost}/ipfs/${p[10]}`
-      $("#product-image").append(`<img src='${ipfsGatewayUrl}/ipfs/${p[10]}' width='250px' />`);
-      //显示起拍价格
-      $("#product-price").html(p[8]);
+      $("#product-image").append(`<img src='${ipfsGatewayUrl}/ipfs/${p[9]}' width='250px' />`);
       //显示押金信息
-      $("#product-auction-end").html(p[9]);
+      // $("#product-auction-end").html(p[9]);
       //显示商品名称
       $("#product-name").html(p[1]);
       //显示房间数
@@ -223,7 +221,9 @@ function renderProductDetails(productId) {
       //显示房子楼层
       $("#product-floors").html(p[7]);
       //显示房子地址
-      $("#product-HouseCondition").html(p[12]);
+      // $("#product-HouseCondition").html(p[12]);
+      //显示起拍价格
+      $("#product-price").html(displayPrice(p[8]));
       //在DOM中保存商品编号
       $("#product-id").val(p[0]);
 
