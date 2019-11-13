@@ -12,7 +12,7 @@ const ethereumNodeUrl = ETHEREUM_NODE_URL ? ETHEREUM_NODE_URL : 'http://localhos
 const ipfsApiAddress = {
   protocol: 'http',
   host: IPFS_API_HOST ? IPFS_API_HOST : 'localhost',
-  port: IPFS_API_PORT ? IPFS_API_PORT : 5001  
+  port: IPFS_API_PORT ? IPFS_API_PORT : 5003 
 }
 const ipfsGatewayUrl = IPFS_GATEWAY_URL ? IPFS_GATEWAY_URL : 'http://localhost:8080'
 
@@ -58,28 +58,6 @@ window.App = {
       if(!productId) return $('#msg').html('ERROR: no product id specified.').show();
       renderProductDetails(productId);    
 
-    //   $("#bidding").submit(function(event) {
-    //     event.preventDefault();
-
-    //     $("#msg").hide();
-    //     //采集表单信息  
-    //     let productId = $("#product-id").val();
-    //     let buyPrice = $("#buy-price").val();
-    //     let StartTime = $("#buy-StartTime").val();
-    //     let secretText = $("#buy-month").val();
-     
-    //     //计算密封出价哈希
-    //     let sealedBid = '0x' + ethUtil.sha3(web3.toWei(buyPrice, 'ether') + secretText).toString('hex');
-     
-    //     //密封出价
-    //       HouseStore.deployed()
-    //       .then(inst => inst.bid(parseInt(productId), sealedBid, {value: web3.toWei(sendAmount), from: web3.eth.accounts[1], gas: 440000}))
-    //       .then(ret => {
-    //           $("#msg").html("Your bid has been successfully submitted!");
-    //           $("#msg").show();
-    //         })
-    //         .catch(err => console.log(err))
-    //  });
     }    
 
     //product.html end
@@ -106,6 +84,33 @@ window.addEventListener('load', function() {
   App.start();
 });
 
+function renderStore() {
+  let inst
+  return HouseStore.deployed()
+    .then(i => inst = i)
+    .then(()=> inst.HouseIndex())
+    .then(next => {
+      for(let id=1;id<=next;id++){
+        inst.getProduct.call(id)
+          .then(p => $("#product-list").append(buildProduct(p)))
+      }        
+    })
+}
+
+function buildProduct(product) {
+  let imgUrl = `${ipfsGatewayUrl}/ipfs/${product[11]}`
+  let html = `<div style="margin:20px">
+                <img src="${imgUrl}" width="150px" />
+                <div>房名：${product[1]}</div>
+                <div>类别：${product[3]}</div>
+                <div>阳台：${product[4]}</div>
+                <div>卫浴：${product[5]}</div>
+                <div>地址：${product[6]}</div>
+              </div>`
+  return $(html)
+  .css('cursor','pointer')
+  .click(()=>location.href=`/product.html?id=${product[0]}`);
+}
 
 
 //list-item.html  start
@@ -159,37 +164,6 @@ function saveProduct(reader, decodedParams) {
 
 
 //product.html  start
-function displayPrice(amt) {
-  return 'Ξ' + web3.fromWei(amt, 'ether');
-}
-
-function getCurrentTimeInSeconds(){
-  return Math.round(new Date() / 1000);
-}
-
-// function displayEndHours(seconds) {
-//   let current_time = getCurrentTimeInSeconds()
-//   let remaining_seconds = seconds - current_time;
-
-//   if (remaining_seconds <= 0) {
-//     return "Auction has ended";
-//   }
-
-//   let days = Math.trunc(remaining_seconds / (24*60*60));
-//   remaining_seconds -= days*24*60*60
-//   let hours = Math.trunc(remaining_seconds / (60*60));
-//   remaining_seconds -= hours*60*60
-//   let minutes = Math.trunc(remaining_seconds / 60);
-//   if (days > 0) {
-//     return "Auction ends in " + days + " days, " + hours + ", hours, " + minutes + " minutes";
-//   } else if (hours > 0) {
-//     return "Auction ends in " + hours + " hours, " + minutes + " minutes ";
-//   } else if (minutes > 0) {
-//     return "Auction ends in " + minutes + " minutes ";
-//   } else {
-//     return "Auction ends in " + remaining_seconds + " seconds";
-//   }
-// }
 
 function renderProductDetails(productId) {
   
@@ -207,27 +181,40 @@ function renderProductDetails(productId) {
       //显示押金信息
       // $("#product-auction-end").html(p[9]);
       //显示商品名称
-      $("#product-name").html(p[1]);
-      //显示房间数
-      $("#product-room").html(p[2]);
+      $("#product-name").html(`<div>房名：${p[1]}</div>`);
       //显示房子类别
-      $("#product-category").html(p[3]);
+      $("#product-category").html(`<div>房屋类型：${p[3]}</div>`);
+      //显示房子地址
+      $("#product-HouseAddress").html(`<div>房屋地址：${p[6]}</div>`);
+      //显示房间数
+      $("#product-room").html(`<div>房间数：${p[2]}</div>`);
       //显示阳台数量
-      $("#product-balcony").html(p[4]);
+      $("#product-balcony").html(`<div>阳台数：${p[4].toString()}</div>`);
       //显示卫浴数量
-      $("#product-bathroom").html(p[5]);
-      //显示房子地址
-      $("#product-HouseAddress").html(p[6]);
-      //显示房子楼层
-      $("#product-floors").html(p[7]);
-      //显示房子地址
-      // $("#product-HouseCondition").html(p[12]);
+      $("#product-bathroom").html(`<div>卫浴数：${p[5].toString()}</div>`);
       //显示起拍价格
-      $("#product-price").html(displayPrice(p[8]));
+      $("#product-price").html(`<div>租金：${p[8].toString()}</div>`);
       //在DOM中保存商品编号
       $("#product-id").val(p[0]);
 
     })
+    
+  })
+
+  HouseStore.deployed().then(inst => {
+    inst.getProductend.call(productId).then(function(p) {
+      //显示商品押金
+      $("#product-deposit").html(`<div>押金：${p[1]}</div>`);
+      //显示房子状态
+      $("#product-status").html(`<div>状态：${p[4]}</div>`);
+      //显示房子楼层
+      $("#product-floors").html(`<div>房屋楼层：${p[2]}</div>`);
+      //显示房子楼层
+      $("#product-condition").html(`<div>房屋品相：${p[3]}</div>`);
+      //在DOM中保存商品编号
+      $("#product-id").val(p[0]);
+    })
+
   })
 }
 
@@ -278,31 +265,3 @@ const categories = ["别墅", "公寓", "二手房"];
 // }
 
 
-function renderStore() {
-  let inst
-  return HouseStore.deployed()
-    .then(i => inst = i)
-    .then(()=> inst.HouseIndex())
-    .then(next => {
-      for(let id=1;id<=next;id++){
-        inst.getProduct.call(id)
-          .then(p => $("#product-list").append(buildProduct(p)))
-      }        
-    })
-}
-
-
-function buildProduct(product) {
-  let imgUrl = `${ipfsGatewayUrl}/ipfs/${product[11]}`
-  let html = `<div style="margin:20px">
-                <img src="${imgUrl}" width="150px" />
-                <div>房名：${product[1]}</div>
-                <div>类别：${product[3]}</div>
-                <div>阳台：${product[4]}</div>
-                <div>卫浴：${product[5]}</div>
-                <div>地址：${product[6]}</div>
-              </div>`
-  return $(html)
-  .css('cursor','pointer')
-  .click(()=>location.href=`/product.html?id=${product[0]}`);
-}
