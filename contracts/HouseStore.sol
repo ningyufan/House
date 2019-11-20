@@ -79,21 +79,21 @@ contract HouseStore {
         HouseIdInStore[HouseIndex] = msg.sender;
     }
 
-    //问题，堆栈太深，只能返回10个变量  解决，再写一个方法返回
+    //问题，堆栈太深，只能返回10个变量  解决 ，再写一个方法返回剩余的字段
     function getProduct( uint _productId) view public returns (uint, string, uint, string, uint, uint, string,
                                                                 string, uint, string) {
         //利用商品编号提取商品信息
         Product memory product = stores[HouseIdInStore[_productId]][_productId];
         //按照定义的先后顺序依次返回product结构各成员
         return (product.id, product.name, product.room, product.category,product.balcony,
-            product.bathroom, product.HouseAddress, product.descLink, product.price, product.imageLink);
+            product.bathroom, product.HouseAddress, product.descLink, product.price,product.imageLink);
     }
 
-    function getProductend( uint _productId) view public returns (uint, uint,  uint, HouseCondition, HouseStatus) {
+    function getProductend( uint _productId) view public returns (uint, uint, uint, HouseCondition, HouseStatus) {
         //利用商品编号提取商品信息
         Product memory product = stores[HouseIdInStore[_productId]][_productId];
         //按照定义的先后顺序依次返回product结构各成员
-        return (product.id, product.deposit, product.floors, product.condition, product.status);
+        return (product.id, product.deposit, product.floors, product.condition,product.status);
     }
 
     function buy (

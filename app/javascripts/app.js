@@ -12,7 +12,7 @@ const ethereumNodeUrl = ETHEREUM_NODE_URL ? ETHEREUM_NODE_URL : 'http://localhos
 const ipfsApiAddress = {
   protocol: 'http',
   host: IPFS_API_HOST ? IPFS_API_HOST : 'localhost',
-  port: IPFS_API_PORT ? IPFS_API_PORT : 5003 
+  port: IPFS_API_PORT ? IPFS_API_PORT : 5001
 }
 const ipfsGatewayUrl = IPFS_GATEWAY_URL ? IPFS_GATEWAY_URL : 'http://localhost:8080'
 
@@ -58,6 +58,28 @@ window.App = {
       if(!productId) return $('#msg').html('ERROR: no product id specified.').show();
       renderProductDetails(productId);    
 
+      $("#bidding").submit(function(event) {
+        event.preventDefault();
+
+        $("#msg").hide();
+        //采集表单信息  
+        let productId = $("#product-id").val();
+        let buyPrice = $("#buy-price").val();
+        let StartTime = $("#buy-StartTime").val();
+        let month = $("#buy-month").val();
+     
+        //计算密封出价哈希
+        // let sealedBid = '0x' + ethUtil.sha3(web3.toWei(buyPrice, 'ether') + secretText).toString('hex');
+     
+        // 密封出价
+          HouseStore.deployed()
+          .then(inst => inst.buy(parseInt(productId), month, StartTime, buyPrice, {value: web3.toWei(buyPrice), from: web3.eth.accounts[1], gas: 440000}))
+          .then(ret => {
+              $("#msg").html("租房申请已提交");
+              $("#msg").show();
+            })
+            .catch(err => console.log(err))
+     });
     }    
 
     //product.html end
@@ -98,9 +120,9 @@ function renderStore() {
 }
 
 function buildProduct(product) {
-  let imgUrl = `${ipfsGatewayUrl}/ipfs/${product[11]}`
+  // let imgUrl = `${ipfsGatewayUrl}/ipfs/${product[11]}`
   let html = `<div style="margin:20px">
-                <img src="${imgUrl}" width="150px" />
+                <img src='${ipfsGatewayUrl}/ipfs/${product[9]}' width="150px" />
                 <div>房名：${product[1]}</div>
                 <div>类别：${product[3]}</div>
                 <div>阳台：${product[4]}</div>
@@ -222,40 +244,39 @@ function renderProductDetails(productId) {
 
 
 
-
-function renderProducts(selector, filters) {
-  $.ajax({
-      url: "/api/product",
-      method: 'GET',
-      contentType: "application/json; charset=utf-8",
-      data: filters
-    })
-    .done(data => {
-      if (data.length == 0) 
-        $(selector).html('No products found');
-      else
-        $(selector).html('');
+// function renderProducts(selector, filters) {
+//   $.ajax({
+//       url: "/api/product",
+//       method: 'GET',
+//       contentType: "application/json; charset=utf-8",
+//       data: filters
+//     })
+//     .done(data => {
+//       if (data.length == 0) 
+//         $(selector).html('No products found');
+//       else
+//         $(selector).html('');
       
-      data.forEach(product => {
-        let tpl = `
-          <div class="col-sm-3 text-center col-margin-bottom-1">
-            <img src='${ipfsGatewayUrl}/ipfs/${product[10]}' width='150px' />
+//       data.forEach(product => {
+//         let tpl = `
+//           <div class="col-sm-3 text-center col-margin-bottom-1">
+//             <img src='${ipfsGatewayUrl}/ipfs/${product[10]}' width='150px' />
             
-            <div>房名：${product[1]}</div>
-            <div>类别：${product[3]}</div>
-            <div>阳台：${product[4]}</div>
-            <div>卫浴：${product[5]}</div>
-            <div>地址：${product[6]}</div>
-          </div>`
-        $(tpl)
-          .css('cursor','pointer')
-          .click(()=>location.href=`/product.html?id=${product.blockchainId}`)
-          .appendTo(selector);
-      })
-    })
-}
+//             <div>房名：${product[1]}</div>
+//             <div>类别：${product[3]}</div>
+//             <div>阳台：${product[4]}</div>
+//             <div>卫浴：${product[5]}</div>
+//             <div>地址：${product[6]}</div>
+//           </div>`
+//         $(tpl)
+//           .css('cursor','pointer')
+//           .click(()=>location.href=`/product.html?id=${product.blockchainId}`)
+//           .appendTo(selector);
+//       })
+//     })
+// }
 
-const categories = ["别墅", "公寓", "二手房"];
+// const categories = ["别墅", "公寓", "二手房"];
 
 // function renderStore() {
 //   renderProducts("#product-list",{});
