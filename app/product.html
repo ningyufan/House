@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <title>房屋拍卖</title>
+ <script src="./app.js"></script>
+</head>
+<body>
+ <div class="container" id="product-page">
+  <h1 class="text-center">房屋细节</h1>
+  <div class="container">
+   <div class="row">
+    <div style="display: none;" class="alert alert-success col-sm-12" id="msg"></div>
+   </div>
+   <div class="row" id="product-details">
+    <div class="col-sm-12 row">
+     <div class="col-lg-4 col-sm-6">
+      <div id="product-image"></div>
+      <div id="product-name"></div>
+      <div id="product-auction-end"></div>
+     </div>
+
+     <div class="col-lg-8 col-sm-6">
+      <h3>起拍价： <span id="product-price"></span></h3>
+      <div id="product-status"></div>
+      <div id="escrow-info">
+        <p></p>
+        <div id="buyer"></div>
+        <div id="seller"></div>
+        <div id="arbiter"></div>
+        <p></p>
+        <div id="release-count"></div>
+        <div id="refund-count"></div>
+        <div id="buyer-vote">
+          <h4>卖家投票</h4>
+          <a class="btn btn-success release-funds">释放给卖方的金额</a>
+          <a class="btn btn-primary refund-funds">退款金额给买方</a>
+        </div>
+        <div id="seller-vote">
+          <h4>买家投票</h4>
+          <a class="btn btn-success release-funds">释放给卖方的金额</a>
+          <a class="btn btn-primary refund-funds">退款金额给买方</a>
+        </div>
+        <div id="arbiter-vote">
+          <h4>仲裁者投票</h4>
+          <a class="btn btn-success release-funds">释放给卖方的金额</a>
+          <a class="btn btn-primary refund-funds">退款金额给买方</a>
+        </div>
+      </div>
+      
+      <form id="bidding" class="col-lg-6 col-sm-12">
+       <h4>你的报价</h4>
+       <div class="form-group">
+        <label for="bid-amount">输入报价金额</label>
+        <input type="text" class="form-control" name="bid-amount" id="bid-amount" placeholder="Amount > Start Price" required="required">
+       </div>
+       <div class="form-group">
+        <label for="bid-send-amount">输入发送金额</label>
+        <input type="text" class="form-control" name="bid-send-amount" id="bid-send-amount" placeholder="Amount >= Bid Amount" required="required">
+       </div>
+
+       <div class="form-group">
+        <label for="secret-text">密文字符串</label>
+        <input type="text" class="form-control" name="secret-text" id="secret-text" placeholder="Any random text" required="required">
+       </div>
+
+       <input type="hidden" name="product-id" id="product-id" />
+       <button type="submit" class="btn btn-primary">提交报价</button>
+      </form>
+      
+      <form id="revealing" class="col-lg-6 col-sm-12">
+       <h4>揭示报价</h4>
+       <div class="form-group">
+        <label for="actual-amount">你的出价</label>
+        <input type="text" class="form-control" name="actual-amount" id="actual-amount" placeholder="Amount > Start Price" required="required">
+       </div>
+       
+       <div class="form-group">
+        <label for="reveal-secret-text">密文字符串</label>
+        <input type="text" class="form-control" name="reveal-secret-text" id="reveal-secret-text" placeholder="Any random text" required="required">
+       </div>
+
+       <input type="hidden" name="product-id" id="product-id" />
+       <button type="submit" class="btn btn-primary">揭示报价</button>
+      </form>      
+
+      <form id="finalize-auction" class="col-lg-6 col-sm-12">
+        <input type="hidden" name="product-id" id="product-id" />
+        <button type="submit" class="btn btn-danger">拍卖完成
+      </form>    
+      
+     </div>
+    </div>
+
+    <div id="product-desc" class="col-sm-12">
+     <h2>房屋细节描述</h2>
+    </div>
+             
+   </div>
+  </div>
+ </div>
+</body>
+
+</html>

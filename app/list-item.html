@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <title>添加房屋</title>
+ <script src="./app.js"></script>
+</head>
+<body>
+ <div class="container" id="list-item-page">
+  <h1>添加房屋拍卖信息</h1>
+  <div class="container">
+   
+   <div class="row">
+    <form class="col-sm-8" id="add-item-to-store">
+     <div class="form-group row">
+      <label for="product-name" class="col-sm-2 control-label">房名</label>
+      <div class="col-sm-10">
+       <input type="text" name="product-name" class="form-control" id="product-name" placeholder="请输入房屋名称" required="required"></input>
+      </div>
+     </div>
+
+     <div class="form-group row">
+      <label for="product-description" class="col-sm-2 control-label">房屋描述</label>
+      <div class="col-sm-10">
+       <textarea class="form-control" name="product-description" rows="3" id="product-description" placeholder="请输入房屋描述" required="required"></textarea>
+      </div>
+     </div>
+
+     <div class="form-group row">
+      <label for="product-image" class="col-sm-2 control-label">房屋图片</label>
+      <div class="col-sm-10">
+       <input type="file" name="product-image" class="form-control" id="product-image" required="required">
+      </div>
+     </div>
+     <div class="form-group row">
+      <label for="product-category" class="col-sm-2 control-label">类型</label>
+      <div class="col-sm-10">
+       <select class="form-control" name="product-category" id="product-category">
+        <option>公寓</option>
+        <option>别墅</option>
+       </select>
+      </div>
+     </div>
+     
+     <div class="form-group row">
+      <label for="product-price" class="col-sm-2 control-label">起拍价</label>
+      <div class="col-sm-10">
+       <input type="text" class="form-control" name="product-price" id="product-price" required="required"></input>
+      </div>
+     </div>
+
+     <div class="form-group row">
+      <label for="product-condition" class="col-sm-2 control-label">房屋状态</label>
+      <div class="col-sm-10">
+       <select class="form-control" name="product-condition" id="product-condition">
+        <option value="1">New</option>
+        <option value="2">Used</option>
+       </select>
+      </div>
+     </div>
+
+     <div class="form-group row">
+      <label for="product-price" class="col-sm-2 control-label">起拍时间</label>
+      <div class="col-sm-10">
+       <input type="datetime-local" class="form-control" name="product-auction-start" id="product-auction-start" required="required"></input>
+      </div>
+     </div>
+
+     <div class="form-group row">
+      <label for="product-price" class="col-sm-2 control-label">拍卖日</label>
+      <div class="col-sm-10">
+       <select class="form-control" name="product-auction-end" id="product-auction-end">
+        <option>1</option>
+        <option>3</option>
+        <option>5</option>
+        <option>7</option>
+        <option>10</option>
+       </select>
+      </div>
+     </div>
+
+     <div class="form-group row">
+      <div class="col-sm-offset-2 col-sm-10">
+       <button type="submit" class="btn btn-primary">房屋上架</button>
+      </div>
+     </div>
+     
+    </form>
+   </div>
+   <div class="row">
+    <div style="display: none;" class="alert alert-success col-sm-8" id="msg"></div>
+   </div>
+  </div>
+ </div>
+</body>
+</html>
