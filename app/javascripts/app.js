@@ -36,13 +36,15 @@ window.App = {
         reader.readAsArrayBuffer(file)
       });      
       
-      $("#add-item-to-store").submit(event => {
+      $("#add-item-to-store").submit(event => {      //提交表单时执行该方法
          event.preventDefault();
-         const req = $("#add-item-to-store").serialize();
+         const req = $("#add-item-to-store").serialize();     //序列化表单中的输入值
+          //将序列化的表单输入值转换为JSON对象
          let params = JSON.parse('{"' + req.replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}');
          let decodedParams = {}
          Object.keys(params)
           .forEach( k => decodedParams[k] = decodeURIComponent(decodeURI(params[k])) )
+           //存入区块链 
          saveProduct(reader, decodedParams);
       })      
     }
@@ -142,16 +144,17 @@ function saveTextBlobOnIpfs(blob) {
 }
 
 function saveProductToBlockchain(params, imageId, descId) {
+  //计算拍卖开始、截止时间
   let auctionStartTime = Date.parse(params["product-auction-start"]) / 1000;
   let auctionEndTime = auctionStartTime + parseInt(params["product-auction-end"]) * 24 * 60 * 60
   return EcommerceStore.deployed()
-    .then( inst => inst.addProductToStore(params["product-name"], 
+    .then( inst => inst.addProductToStore(params["product-name"],   //添加商品到区块链
                         params["product-category"], 
                         imageId, descId, auctionStartTime,auctionEndTime, 
                         web3.toWei(params["product-price"], 'ether'), 
                         parseInt(params["product-condition"]), 
                         {from: web3.eth.accounts[0], gas: 440000}))
-    .then(() =>{
+    .then(() =>{                          //显示操作提示信息
       $("#msg").show();
       $("#msg").html("你的房屋已经成功添加到平台!");    
     })                          
@@ -161,9 +164,9 @@ function saveProductToBlockchain(params, imageId, descId) {
 function saveProduct(reader, decodedParams) {
   let imageId, descId;
   return saveImageOnIpfs(reader)
-    .then(id => imageId = id) 
+    .then(id => imageId = id) //保存图片哈希
     .then(() => saveTextBlobOnIpfs(decodedParams["product-description"]) )
-    .then(id => descId = id)  
+    .then(id => descId = id)  //保存描述文本哈希
     .then(() => saveProductToBlockchain(decodedParams, imageId, descId))
     .catch(err => console.log(err))
 }

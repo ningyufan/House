@@ -28,7 +28,7 @@ contract EcommerceStore {
     uint highestBid;               //最高出价
     uint secondHighestBid;         //次高出价
     uint totalBids;                //投标人数
-
+    //房屋状态
     ProductStatus status;           //房子销售状态：售出、未售
     ProductCondition condition;     //品相：新品、二手
     mapping (address => mapping (bytes32 => Bid)) bids;
