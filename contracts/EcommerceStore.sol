@@ -95,13 +95,16 @@ contract EcommerceStore {
 
   function bid(uint _productId, bytes32 _bid) payable public returns (bool) {
     Product storage product = stores[productIdInStore[_productId]][_productId];
+    //当前还处于竞价有效期内
     require (now >= product.auctionStartTime);
     require (now <= product.auctionEndTime);
+    //支付的保证金高于商品起拍价
     require (msg.value > product.startPrice);
+    //竞价人首次递交该出价
     require (product.bids[msg.sender][_bid].bidder == 0);
-
+    //保存出价信息
     product.bids[msg.sender][_bid] = Bid(msg.sender, _productId, msg.value, false);
-    product.totalBids += 1;
+    product.totalBids += 1;          //更新竞价参与人数
     return true;
   }
 
@@ -171,18 +174,27 @@ contract EcommerceStore {
   }
 
   function finalizeAuction(uint _productId) public {
+    //根据商品编号提取商品数据
     Product product = stores[productIdInStore[_productId]][_productId];
+     //该商品的拍卖应该已经截止
     require(now > product.auctionEndTime);
+     //该商品为首次拍卖，之前也没有流拍
     require(product.status == ProductStatus.Open);
+    //方法的调用者是不是胜出的买家
     require(product.highestBidder != msg.sender);
+    //调用者也不是卖家
     require(productIdInStore[_productId] != msg.sender);
 
-    if (product.totalBids == 0) {
-      product.status = ProductStatus.Unsold;
+    if (product.totalBids == 0) {       //没有人参与竞价，流拍
+      product.status = ProductStatus.Unsold;     //将商品标记为”未售出“
     } else {
+      //创建托管合约实例并按照次高出价将赢家资金转入托管合约
       Escrow escrow = (new Escrow).value(product.secondHighestBid)(_productId, product.highestBidder, productIdInStore[_productId], msg.sender);
+      //记录托管合约实例的地址
       productEscrow[_productId] = address(escrow);
+      //将商品标记为已售出
       product.status = ProductStatus.Sold;
+      //计算赢家的保证金余额并原路返还
       uint refund = product.highestBid - product.secondHighestBid;
       product.highestBidder.transfer(refund);
     }
