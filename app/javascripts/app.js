@@ -8,7 +8,10 @@ import ipfsAPI from 'ipfs-api'
 import ethUtil from 'ethereumjs-util'
 import $ from 'jquery'
 
+
+//连接ganache-cli
 const ethereumNodeUrl = ETHEREUM_NODE_URL ? ETHEREUM_NODE_URL : 'http://localhost:8545'
+//连接ipfs
 const ipfsApiAddress = {
   protocol: 'http',
   host: IPFS_API_HOST ? IPFS_API_HOST : 'localhost',
@@ -156,7 +159,7 @@ function saveProductToBlockchain(params, imageId, descId) {
                         {from: web3.eth.accounts[0], gas: 440000}))
     .then(() =>{                          //显示操作提示信息
       $("#msg").show();
-      $("#msg").html("你的房屋已经成功添加到平台!");    
+      $("#msg").html("你的房屋拍卖信息已经成功添加到平台!");    
     })                          
     .catch(err => console.log(err))
 }

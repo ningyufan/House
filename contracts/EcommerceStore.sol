@@ -56,7 +56,7 @@ contract EcommerceStore {
   function EcommerceStore() public {
     productIndex = 0;
   }
-
+  //房屋上架
   function addProductToStore(
     string _name,
     string _category,
@@ -81,7 +81,7 @@ contract EcommerceStore {
 
       NewProduct(productIndex, _name, _category, _imageLink, _descLink, _auctionStartTime, _auctionEndTime, _startPrice, _productCondition);
   }
-  //问题，堆栈太深，只能返回10个变量  解决 ，再写一个方法返回剩余的字段
+  //问题，堆栈太深，只能返回10个变量 
   function getProduct(uint _productId) view public
            returns (uint, string, string, string, string, uint, uint, uint, ProductStatus, ProductCondition) {
     //利用商品编号提取商品信息
