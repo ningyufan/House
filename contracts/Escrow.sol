@@ -52,7 +52,7 @@ contract Escrow {
       fundsDisbursed = true;
     }
   }
-  
+
   function escrowInfo() view public returns (address, address, address, bool, uint, uint) {
     return (buyer, seller, arbiter, fundsDisbursed, releaseCount, refundCount);
   }

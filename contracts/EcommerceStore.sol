@@ -103,6 +103,8 @@ contract EcommerceStore {
     //竞价人首次递交该出价
     require (product.bids[msg.sender][_bid].bidder == 0);
     //保存出价信息
+    //msg.sender执行合约的地址，账户
+    //msg.value执行合约时,转账的eth数量,以wei为单位。
     product.bids[msg.sender][_bid] = Bid(msg.sender, _productId, msg.value, false);
     product.totalBids += 1;          //更新竞价参与人数
     return true;

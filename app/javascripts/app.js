@@ -303,7 +303,7 @@ function renderProducts(selector, filters) {
             <div>${product['category']}</div>
             <div>${product['auctionStartTime']}</div>
             <div>${product['auctionEndTime']}</div>
-            <div>Ether: ${product['price']}</div>
+            <div>wei: ${product['price']}</div>
           </div>`
         $(tpl)
           .css('cursor','pointer')
